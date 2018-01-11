@@ -1,0 +1,40 @@
+{
+	"name": "recordings",
+	"i18n": {
+		"en-US": {
+			"label": "Recordings",
+			"description": "The Recordings app allows you to effectively work with call records"
+		},
+		"ru-RU": {
+			"label": "Recordings",
+			"description": "Приложение, позволяющее эффективно работать с записями разговоров"
+		},
+		"fr-FR": {
+			"label": "Recordings",
+			"description": "The Recordings app allows you to effectively work with call records"
+		},
+		"nl-NL": {
+			"label": "Recordings",
+			"description": "The Recordings app allows you to effectively work with call records"
+		}
+	},
+	"tags": [
+		"reseller"
+	],
+	"icon": "recordings.png",
+	"api_url": "",
+	"author": "SIPLABS LLC",
+	"version": "1.0",
+	"license": "-",
+	"price": 0,
+	"screenshots": [
+		"recordings1.png",
+		"recordings2.png",
+		"recordings3.png"
+	],
+	"urls": {
+		"documentation": "{documentation_url}",
+		"howto": "{howto_video_url}"
+	},
+	"pvt_type": "app"
+}
