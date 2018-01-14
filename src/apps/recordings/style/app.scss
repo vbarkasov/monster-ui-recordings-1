@@ -464,6 +464,10 @@
 		height: 29px;
 		padding: 0 6px;
 	}
+
+	.ui-slider .ui-slider-handle {
+		z-index: 1;
+	}
 }
 
 
