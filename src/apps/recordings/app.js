@@ -658,7 +658,7 @@ define(function(require) {
 				$('#direction').val('all');
 				$('#caller-id-name').val('').trigger('chosen:updated');
 				$('#user-name-select').val('').trigger('chosen:updated');
-				$('#device_name_select_chosen').val('').trigger('chosen:updated');
+				$('#device-name-select').val('').trigger('chosen:updated');
 
 				var $durationSlider = $('#duration-slider');
 				var min = $durationSlider.slider('option', 'min');
