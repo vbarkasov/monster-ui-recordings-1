@@ -172,67 +172,6 @@ define(function(require) {
 			});
 		},
 
-		/*_getCDRsByDate: function(fromDate, toDate, callback, pageStartKey) {
-			var self = this,
-				filters = {
-					'page_size': 50,
-					'created_from': monster.util.dateToBeginningOfGregorianDay(fromDate),
-					'created_to': monster.util.dateToEndOfGregorianDay(toDate)
-				};
-
-			if(pageStartKey) {
-				filters['start_key'] = pageStartKey;
-			}
-
-			self.callApi({
-				resource: 'cdrs.listByInteraction',
-				data: {
-					accountId: self.accountId,
-					filters: filters
-				},
-				success: function(data, status) {
-					callback(data.data, data['next_start_key']);
-				}
-			});
-		},*/
-
-		/*_getCDR: function(cdrId, callback) {
-			var self = this;
-			self.log('Get CDR');
-			// 'get': { verb: 'GET', url: 'accounts/{accountId}/cdrs/{cdrId}' },
-
-			if(!cdrId || typeof(cdrId) === 'undefined') {
-				self.log('Error: CDR ID not found');
-			}
-
-			self.callApi({
-				resource: 'cdrs.get',
-				data: {
-					accountId: self.accountId,
-					cdrId: cdrId
-				},
-				success: function(data, status) {
-					self.log('CDR data:');
-					self.log(data);
-					var cdr = data.data;
-
-					if(cdr.length === 0) {
-						self.log('Warning: No CDR #' + cdrId);
-						return;
-					}
-
-					if(typeof(callback) === 'function') {
-						callback(cdr);
-					}
-				},
-				error: function(data, status) {
-					//_callback({}, uiRestrictions);
-					self.log('get cdr error');
-					self.log(data);
-				}
-			});
-		},*/
-
 		_renderRecordingsList: function(stopIteration) {
 			var self = this;
 
@@ -718,6 +657,8 @@ define(function(require) {
 				self._setDatetimeRangeByKey(self.settings.defaultDateRangeKey, table);
 				$('#direction').val('all');
 				$('#caller-id-name').val('').trigger('chosen:updated');
+				$('#user-name-select').val('').trigger('chosen:updated');
+				$('#device_name_select_chosen').val('').trigger('chosen:updated');
 
 				var $durationSlider = $('#duration-slider');
 				var min = $durationSlider.slider('option', 'min');
@@ -814,39 +755,19 @@ define(function(require) {
 		_initAudioPlayers: function() {
 			var self = this;
 
-			/*$('.js-record-audio').not('.js-handled').each(function(i, el) {
+			$('.js-audio-recording').not('.js-handled').each(function(i, el) {
 				var $audioEl = $(this);
-				self._getRecord($audioEl.data('recording-id'), function(recordingData) {
-					// TODO
-					$audioEl.html('<source src="' + url + '" type="audio/mpeg">');
-					$audioEl.addClass('js-handled');
-				});
-			});*/
+				$audioEl.html('<source src="' + self._getRecordingUrl($audioEl.data('recording-id')) + '" type="audio/mpeg">');
+				$audioEl.addClass('js-handled');
+			});
 		},
 
-		_getRecord: function(recordingId, callback) {
+		_getRecordingUrl: function(recordingId) {
 			var self = this;
-
-			self.callApi({
-				resource: 'recordings.get',
-				data: {
-					accountId: self.accountId,
-					recordingId: recordingId
-				},
-				success: function(data, status) {
-					var recordData = data.data;
-					self.log('Record #'+ recordingId);
-					self.log(recordData);
-
-					if(typeof(callback) === 'function') {
-						callback(recordData);
-					}
-				},
-				error: function(data, status) {
-					self.log('Error while getting Record #' + recordingId);
-					self.log(data);
-				}
-			});
+			var url = self.apiUrl + 'accounts/' + self.accountId + '/recordings/' + recordingId
+				+ '?accept=audio/mpeg'
+				+ '&auth_token=' + self.getAuthToken();
+			return url;
 		},
 
 		_initHandlebarsHelpers: function() {

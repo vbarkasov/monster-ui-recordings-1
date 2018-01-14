@@ -86,10 +86,7 @@
 			<td>{{callee_id_number}}</td>
 			<td>{{duration}}</td>
 			<td class="recordings-table__actions-col">
-				<audio class="js-record-audio" controls="controls">
-					<!--source src="http://{{server}}:8000/v2/accounts/{{accountId}}/recordings/{{id}}?accept=audio/mpeg" type="audio/mpeg"-->
-				</audio>
-
+				<audio class="js-audio-recording" data-recording-id="{{id}}" controls="controls"></audio>
 			</td>
 		</tr>
 	{{/each}}
