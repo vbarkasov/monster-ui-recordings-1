@@ -755,19 +755,88 @@ define(function(require) {
 		_initAudioPlayers: function() {
 			var self = this;
 
-			$('.js-audio-recording').not('.js-handled').each(function(i, el) {
-				var $audioEl = $(this);
-				$audioEl.html('<source src="' + self._getRecordingUrl($audioEl.data('recording-id')) + '" type="audio/mpeg">');
-				$audioEl.addClass('js-handled');
-			});
-		},
+			var getAudio = function(data){
+				var xhr = new XMLHttpRequest();
+				xhr.onreadystatechange = function() {
+					if (this.readyState == 4) {
+						if (this.status == 200) {
+							if(typeof(data.success) === 'function') {
+								data.success(this.response);
+							}
+						} else {
+							if (typeof(data.error) === 'function') {
+								data.error();
+							}
+						}
+					}
+				};
+				xhr.open('GET', self.apiUrl + 'accounts/' + self.accountId + '/recordings/' + data.recordingId + '?accept=audio/mpeg');
+				xhr.setRequestHeader('X-Auth-Token', self.getAuthToken());
+				xhr.responseType = 'blob';
+				xhr.send();
+			};
 
-		_getRecordingUrl: function(recordingId) {
-			var self = this;
-			var url = self.apiUrl + 'accounts/' + self.accountId + '/recordings/' + recordingId
-				+ '?accept=audio/mpeg'
-				+ '&auth_token=' + self.getAuthToken();
-			return url;
+			self.vars.$appContainer.find('.js-play-recording').not('.js-handled').on('click', function(e) {
+				e.preventDefault();
+
+				var $btn = $(this);
+				var $icon = $btn.find('.fa').attr('class', 'fa fa-spinner fa-pulse');
+
+				var recordingId = $btn.data('recording-id');
+
+				getAudio({
+					recordingId: recordingId,
+					success: function(blob){
+						var objectUrl = window.URL.createObjectURL(blob);
+						var player = document.getElementById('recording-player-' + recordingId);
+						player.src = objectUrl;
+						player.play();
+
+						player.addEventListener('loadeddata', function() {
+							window.URL.revokeObjectURL(objectUrl);
+						}, false);
+						player.style.display = 'inline-block';
+						$icon.attr('class', 'fa fa-play');
+					},
+					error: function(){
+						$icon.attr('class', 'fa fa-exclamation-triangle');
+					}
+				});
+			}).addClass('js-handled');
+
+			self.vars.$appContainer.find('.js-download-recording').not('.js-handled').on('click', function(e) {
+				e.preventDefault();
+				var $btn = $(this);
+				var recordingId = $btn.data('recording-id');
+				var $icon = $btn.find('.fa').attr('class', 'fa fa-spinner fa-pulse');
+
+				var $itemParent = $btn.closest('.js-item');
+				var datetime = $itemParent.find('.js-item-datetime').text()
+					.replace(/:/g, '-')
+					.replace(/\s/g, '__');
+				var owner = $itemParent.find('.js-item-owner').text().replace(/\s/g, '_');
+				var number = $itemParent.find('.js-item-number').text();
+
+				var fileName = datetime + '__' + number + '__' + owner + '.mp3';
+
+				getAudio({
+					recordingId: recordingId,
+					success: function(blob){
+						var objectUrl = window.URL.createObjectURL(blob);
+						var a = document.createElement("a");
+						document.body.appendChild(a);
+						a.style.display = 'none';
+						a.href = objectUrl;
+						a.download = fileName;
+						a.click();
+						window.URL.revokeObjectURL(objectUrl);
+						$icon.attr('class', 'fa fa-download');
+					},
+					error: function(){
+						$icon.attr('class', 'fa fa-exclamation-triangle');
+					}
+				});
+			}).addClass('js-handled');
 		},
 
 		_initHandlebarsHelpers: function() {
