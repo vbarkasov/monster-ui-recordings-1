@@ -21,7 +21,7 @@ define(function(require) {
 		css: [ 'app' ],
 
 		settings: {
-			debug: true,
+			debug: false,
 			defaultDateRangeKey: 'all'
 		},
 
@@ -127,19 +127,16 @@ define(function(require) {
 
 			self.log('Getting Recordings');
 
-			self.callApi({
+			self.getAll({
 				resource: 'recordings.list',
-				data: {
-					accountId: self.accountId
-				},
-				success: function(data, status) {
-					self.log(data.data);
+				success: function(data) {
+					self.log(data);
 
 					if(typeof(callback) === 'function') {
-						callback(data.data);
+						callback(data);
 					}
 				},
-				error: function(data, status) {
+				error: function(data) {
 					self.log('Error while getting recordings');
 					self.log(data);
 				}
@@ -151,20 +148,16 @@ define(function(require) {
 
 			self.log('Getting CDRs');
 
-			self.callApi({
+			self.getAll({
 				resource: 'cdrs.list',
-				data: {
-					accountId: self.accountId
-				},
-				success: function(data, status) {
-					var cdrs = data.data;
+				success: function(cdrs) {
 					self.log(cdrs);
 
 					if(typeof(callback) === 'function') {
 						callback(cdrs);
 					}
 				},
-				error: function(data, status) {
+				error: function(data) {
 					//_callback({}, uiRestrictions);
 					self.log('Error while getting cdrs');
 					self.log(data);
@@ -180,7 +173,7 @@ define(function(require) {
 				data: {
 					accountId: self.accountId,
 					removeMetadataAPI: true,
-					generateError: false
+					generateError: self.settings.debug
 				},
 				success: function(data, status) {
 					self.log('Storage data:');
@@ -217,7 +210,7 @@ define(function(require) {
 					accountId : self.accountId,
 					data : {},
 					removeMetadataAPI: true,
-					generateError: false
+					generateError: self.settings.debug
 				},
 				success : function(data) {
 					if(typeof(callback) === 'function') {
@@ -348,20 +341,17 @@ define(function(require) {
 			var self = this;
 			self.log('Getting Devices');
 
-			self.callApi({
+
+			self.getAll({
 				resource: 'device.list',
-				data: {
-					accountId: self.accountId
-				},
-				success: function(data, status) {
-					var devices = data.data;
+				success: function(devices) {
 					self.log(devices);
 
 					if(typeof(callback) === 'function') {
 						callback(devices);
 					}
 				},
-				error: function(data, status) {
+				error: function(data) {
 					self.log('Error while getting devices');
 					self.log(data);
 				}
@@ -372,23 +362,67 @@ define(function(require) {
 			var self = this;
 			self.log('Getting Users');
 
-			self.callApi({
+
+			self.getAll({
 				resource: 'user.list',
-				data: {
-					accountId: self.accountId
-				},
-				success: function(data, status) {
-					var users = data.data;
+				success: function(users) {
 					self.log(users);
 
 					if(typeof(callback) === 'function') {
 						callback(users);
 					}
 				},
-				error: function(data, status) {
+				error: function(data) {
 					self.log('Error while getting users');
 					self.log(data);
 				}
+			});
+		},
+
+		getAll: function(callApiData, startKey, continueData) {
+			// Warning! Method works for listed data only!
+			// -- Usage:
+			// self.getAll({
+			//   apiKey: 'user.list',
+			//   success: function(resultArr){},
+			//   error: function(data){},
+			//   data: {
+			//      someParam: someValue
+			//   }
+			// })
+
+			continueData = continueData || [];
+
+			var self = this;
+			if(typeof(callApiData.resource) === 'undefined') {
+				self.log('Error! Api keyword is undefined');
+				return;
+			}
+
+			var requestData = $.extend({
+				accountId: self.accountId,
+				generateError: self.settings.debug
+			}, callApiData.data || {});
+
+			if(typeof(startKey) !== 'undefined') {
+				requestData.startKey = startKey;
+			}
+
+			self.callApi({
+				resource: callApiData.resource,
+				data: requestData,
+				success: function(response){
+					var mergedData = $.merge(continueData, response.data);
+					if(response.next_start_key && startKey !== response.next_start_key) {
+						self.getAll(callApiData, response.next_start_key, mergedData);
+						return;
+					}
+
+					if(typeof(callApiData.success) === 'function') {
+						callApiData.success(mergedData);
+					}
+				},
+				error: callApiData.error || function(){}
 			});
 		},
 
