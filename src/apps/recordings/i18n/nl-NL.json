@@ -45,8 +45,8 @@
 			"resetBtn": {
 				"text": "Reset filters"
 			}
-			
 		},
+		"settingsBtnText": "Settings",
 		"storageManager": {
 			"title": "Storage settings",
 			"newStorageBtnText": "New storage",

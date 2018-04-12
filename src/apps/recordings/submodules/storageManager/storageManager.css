@@ -59,6 +59,10 @@
 	vertical-align: -8px;
 }
 
+.storage-manager-wrapper .storage-choice .item-settings-wrapper {
+	clear: both;
+}
+
 .storage-manager-wrapper .storage-provider-wrapper {
 	opacity: 0.6;
 	max-width: 596px;
@@ -85,6 +89,12 @@
 	border-radius: 2px;
 	line-height: 46px;
 	padding: 7px 25px 7px;
+}
+
+.storage-manager-wrapper .storage-choice::after {
+	content: '';
+	display: block;
+	clear: both;
 }
 
 .storage-manager-wrapper .storage-choice .check-icon-wrapper {
@@ -133,6 +143,8 @@
 
 .storage-manager-wrapper .storage-choice .right-section a {
 	margin-left: 11px;
+	vertical-align: top;
+	display: inline-block;
 }
 
 .storage-manager-wrapper .storage-choice .right-section a.remove-storage-link {
@@ -168,8 +180,14 @@
 
 .storage-manager-wrapper .storage-choice .storage-name {
 	font-weight: 600;
-	margin-top: 13px;
 	text-align: right;
+	display: inline-block;
+	vertical-align: top;
+	margin-top: 0;
+	width: 160px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
 }
 
 .storage-manager-wrapper .storage-choice .folder-icon {
@@ -204,11 +222,30 @@
 	padding-top: 18px;
 }
 
+.storage-item-settings .form-horizontal {
+	margin: 0 auto;
+	display: block;
+	max-width: 410px;
+}
+
+.storage-item-settings .form-horizontal .control-label {
+	width: 110px;
+	display: inline-block;
+	vertical-align: top;
+	float: none;
+	padding-right: 14px;
+}
+
+.storage-item-settings .form-horizontal .controls {
+	margin-left: 0;
+	display: inline-block;
+	vertical-align: top;
+}
+
 .storage-item-settings input[type="text"],
 .storage-item-settings input[type="password"] {
 	border-right: 1px solid #F5F5F5;
 	border-bottom: 1px solid #F5F5F5;
-	width: 300px;
 	font-size: 14px;
 }
 
@@ -322,30 +359,11 @@
 }
 
 
-/*.settings-btn i,
-.settings-btn .text-tip {
+@media (max-width: 1000px) {
+	.storage-manager-wrapper .storage-provider-wrapper {
+		width: 100%;
+	}
 }
-
-.settings-btn .text-tip {
-	display: none;
-	font-size: 17px;
-	vertical-align: 5px;
-	margin-left: 6px;
-	line-height: 26px;
-	font-weight: normal;
-	color: #555;
-}
-
-.settings-btn:hover .text-tip {
-	display: inline-block;
-	-webkit-animation-duration: 0.5s;
-	animation-duration: 0.5s;
-	-webkit-animation-fill-mode: both;
-	animation-fill-mode: both;
-	-webkit-animation-name: textTipVisibility;
-	animation-name: textTipVisibility;
-}
-*/
 
 /* ----------------------------
    Animations ---------------*/
@@ -354,24 +372,4 @@
 	50% { opacity: 0; }
 }
 
-/*
-@-webkit-keyframes textTipVisibility {
-	0% {
-		opacity: 0;
-		margin-right: -50px;
-	}
-	100% {
-		opacity: 1;
-		margin-right: 0px;
-	}
-}
-@keyframes textTipVisibility {
-	0% {
-		opacity: 0;
-		margin-right: -50px;
-	}
-	100% {
-		opacity: 1;
-		margin-right: 0px;
-	}
-}*/
+

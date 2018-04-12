@@ -63,8 +63,6 @@ define(function(require) {
 		render: function(container) {
 			var self = this;
 
-			self.log('render');
-
 			monster.ui.generateAppLayout(self, {
 				menus: [
 					{
@@ -76,6 +74,8 @@ define(function(require) {
 					}
 				]
 			});
+
+			$(document.body).addClass('recordings-app'); // for styles;
 		},
 
 		log: function(msg){
@@ -110,7 +110,6 @@ define(function(require) {
 		_insertSettingsBtn: function(template) {
 			var self = this;
 			if(monster.util.isAdmin()) {
-				$('#settings-btn').appendTo($('#main_topbar_current_app_name'));
 				self._initSettingsButtonBehavior();
 			}
 
@@ -118,6 +117,7 @@ define(function(require) {
 				e.preventDefault();
 				$('.js-storages-settings').slideUp(400, function(){
 					$(this).find('.js-settings-content').empty();
+					$('.js-settings-btn').fadeIn();
 				});
 			});
 		},
@@ -383,7 +383,7 @@ define(function(require) {
 			// Warning! Method works for listed data only!
 			// -- Usage:
 			// self.getAll({
-			//   apiKey: 'user.list',
+			//   resource: 'user.list',
 			//   success: function(resultArr){},
 			//   error: function(data){},
 			//   data: {
@@ -429,8 +429,9 @@ define(function(require) {
 		_initSettingsButtonBehavior: function() {
 			var self = this;
 
-			$('#settings-btn').on('click', function(e) {
-				e.stopPropagation();
+			$('.js-settings-btn').not('.handled').on('click', function(e) {
+				e.preventDefault();
+
 				var $settingsContainer = $('.js-storages-settings');
 
 				if($settingsContainer.is(':hidden')) {
@@ -448,7 +449,8 @@ define(function(require) {
 						$(this).find('.js-settings-content').empty();
 					});
 				}
-			});
+				$(this).fadeOut();
+			}).addClass('handled');
 		},
 
 		_initDateTimePickers: function() {

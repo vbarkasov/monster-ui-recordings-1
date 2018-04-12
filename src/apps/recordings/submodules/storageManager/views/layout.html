@@ -9,12 +9,12 @@
 							<i class="check-icon fa fa-check-circle"></i>
 						</a>
 						<svg class="logo-header"><use xlink:href="#{{#compare type "===" "s3"}}aws{{else}}g-drive{{/compare}}--color" /></svg>
+						<span class="js-storage-name storage-name">{{ name }}</span>
 						<div class="right-section">
-							<span class="js-storage-name storage-name">{{ name }}</span>
 							<a class="js-edit-storage edit-storage-link" href="#"><i class="fa fa-pencil-square-o"></i></a>
 							<a class="js-remove-storage remove-storage-link" href="#"><i class="fa fa-trash-o"></i></a>
 						</div>
-						<div class="js-item-settings-wrapper"></div>
+						<div class="js-item-settings-wrapper item-settings-wrapper"></div>
 					</div>
 				</div>
 			{{/each}}
